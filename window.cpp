@@ -6,18 +6,12 @@
 Window::Window(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::Window),
-      chart(new SoundChart())
+      audioBuffer(this)
 {
     ui->setupUi(this);
 
-    //setup charts
-    chart->setTitle("Sound level");
-    chart->legend()->hide();
-    ui->soundView->setChart(chart);
-    //ui->soundView->setRenderHint(QPainter::Antialiasing);
-
     //setup audio input
-    format.setSampleRate(11025);
+    format.setSampleRate(8000);
     format.setChannelCount(1);
     format.setSampleSize(16);
     format.setSampleType(QAudioFormat::SignedInt);
@@ -33,25 +27,24 @@ Window::Window(QWidget *parent)
     }
 
     audio = new QAudioInput(format,this);
-
     connect(audio,&QAudioInput::stateChanged,this,&Window::stateManager);
 
+    audio->setNotifyInterval(75); //75 ms is the duration of a quarter at 100bpm
 
+    connect(audio,&QAudioInput::notify,[this]{
+        int ready = audio->bytesReady();
+        this->audioBuffer.seek(0);
+        qDebug()<<format.durationForBytes(this->audioBuffer.bytesAvailable())/1000;
+        this->processAudioFrame(this->audioBuffer.read(ready));
+        this->audioBuffer.buffer().clear();
+        this->audioBuffer.seek(0);
+    });
 }
 
 Window::~Window()
 {
+    this->on_stopRecording_clicked();
     delete ui;
-}
-
-void Window::processAudioFrame(QByteArray data, int lenght){
-    if(lenght > 0)
-    {
-        for (int i=0; i<lenght/20; i++, data+=20) {
-            const qint16 pcmSample = qFromLittleEndian<qint16>(data.data());
-            this->chart->pushSoundLevel(pcmSample/32768.0);
-        }
-    }
 }
 
 void Window::stateManager(QAudio::State newState) {
@@ -61,23 +54,24 @@ void Window::stateManager(QAudio::State newState) {
 void Window::on_startRecording_clicked()
 {
     qDebug()<<"Start recording";
-    auto io = this->audio->start();
-
-    connect(io,&QIODevice::readyRead,[this,io]{
-        int len = audio->bytesReady();
-
-        QByteArray buff(len,0);
-        int buffLenght = io->read(buff.data(),len);
-        if (buffLenght>0){
-            this->processAudioFrame(buff.constData(),buffLenght);
-        }
-    });
+    this->audioBuffer.open(QIODevice::ReadWrite);
+    this->audio->start(&this->audioBuffer);
 }
 
+void Window::processAudioFrame(QByteArray data){
+    const short* frames = (short *)data.constData();
+
+
+//    qDebug()<< data.length() << format.durationForBytes(data.length())/1000.0 << this->audio->notifyInterval();
+    for (int  i=0; i < data.length()/2; i ++ ){
+        ui->soundView->pushSoundLevel(frames[i]);
+    }
+}
 
 void Window::on_stopRecording_clicked()
 {
     qDebug()<<"Stop recording";
     this->audio->stop();
+    this->audioBuffer.close();
 }
 

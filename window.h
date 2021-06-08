@@ -2,19 +2,17 @@
 #define WINDOW_H
 
 #include <QMainWindow>
-#include <QChartView>
-#include <QChart>
-
 #include <QAudioInput>
-#include <QtEndian>
+#include <QBuffer>
 
-#include "soundChart.h"
+#include <QDebug>
+
+#include "soundWidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Window; }
 QT_END_NAMESPACE
 
-using namespace QtCharts;
 
 class Window : public QMainWindow
 {
@@ -33,10 +31,10 @@ private slots:
 
 private:
     Ui::Window *ui;
-    SoundChart *chart;
 
     QAudioFormat format;
     QAudioInput *audio;
-    void processAudioFrame(QByteArray data, int lenght);
+    QBuffer audioBuffer;
+    void processAudioFrame(QByteArray data);
 };
 #endif // WINDOW_H

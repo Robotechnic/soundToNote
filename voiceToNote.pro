@@ -11,11 +11,11 @@ CONFIG += console
 
 SOURCES += \
     main.cpp \
-    soundChart.cpp \
+    soundWidget.cpp \
     window.cpp
 
 HEADERS += \
-    soundChart.h \
+    soundWidget.h \
     window.h
 
 FORMS += \
