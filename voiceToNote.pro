@@ -10,16 +10,19 @@ CONFIG += console
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    utils/frequencyparser.cpp \
     main.cpp \
-    soundWidget.cpp \
-    window.cpp
+    widgets/soundWidget.cpp \
+    widgets/window.cpp
 
 HEADERS += \
-    soundWidget.h \
-    window.h
+    utils/notesFrequency.h \
+    utils/frequencyparser.h \
+    widgets/soundWidget.h \
+    widgets/window.h
 
 FORMS += \
-    window.ui
+    ui/window.ui
 
 TRANSLATIONS += \
     voiceToNote_fr_FR.ts
