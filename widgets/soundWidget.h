@@ -17,8 +17,8 @@ public:
 
     void setBufferSize(int bufferSize);
 
-public slots:
-    void pushSoundLevel(double level);
+    void pushSoundLevel(float level);
+    void pushSoundLevel(QVector<float> level);
 
 private:
     void paintEvent(QPaintEvent *event);

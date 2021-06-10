@@ -8,6 +8,7 @@
 #include <QDebug>
 
 #include "soundWidget.h"
+#include "utils/frequencyparser.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Window; }
@@ -23,11 +24,15 @@ public:
     ~Window();
 
 private slots:
-    void on_startRecording_clicked();
+    void start();
 
-    void on_stopRecording_clicked();
+    void stop();
 
     void stateManager(QAudio::State newState);
+
+    void on_actionStartRecording_triggered();
+
+    void on_actionStopRecording_triggered();
 
 private:
     Ui::Window *ui;
@@ -36,5 +41,7 @@ private:
     QAudioInput *audio;
     QBuffer audioBuffer;
     void processAudioFrame(QByteArray data);
+
+    FrequencyParser parser;
 };
 #endif // WINDOW_H

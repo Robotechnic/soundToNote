@@ -1,4 +1,4 @@
-#include "window.h"
+#include "widgets/window.h"
 #include "ui_window.h"
 
 
@@ -6,7 +6,8 @@
 Window::Window(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::Window),
-      audioBuffer(this)
+      audioBuffer(this),
+      parser(this)
 {
     ui->setupUi(this);
 
@@ -41,9 +42,8 @@ Window::Window(QWidget *parent)
     });
 }
 
-Window::~Window()
-{
-    this->on_stopRecording_clicked();
+Window::~Window() {
+    this->stop();
     delete ui;
 }
 
@@ -51,8 +51,7 @@ void Window::stateManager(QAudio::State newState) {
     qDebug()<<newState;
 }
 
-void Window::on_startRecording_clicked()
-{
+void Window::start(){
     qDebug()<<"Start recording";
     this->audioBuffer.open(QIODevice::ReadWrite);
     this->audio->start(&this->audioBuffer);
@@ -60,18 +59,26 @@ void Window::on_startRecording_clicked()
 
 void Window::processAudioFrame(QByteArray data){
     const short* frames = (short *)data.constData();
-
-
-//    qDebug()<< data.length() << format.durationForBytes(data.length())/1000.0 << this->audio->notifyInterval();
+    QVector<float> result;
     for (int  i=0; i < data.length()/2; i ++ ){
-        ui->soundView->pushSoundLevel(frames[i]);
+        result.append(frames[i]);
     }
+
+    ui->soundView->pushSoundLevel(result);
+    parser.pushAmplitude(result);
 }
 
-void Window::on_stopRecording_clicked()
-{
+void Window::stop(){
     qDebug()<<"Stop recording";
     this->audio->stop();
     this->audioBuffer.close();
+}
+void Window::on_actionStartRecording_triggered(){
+    this->start();
+}
+
+
+void Window::on_actionStopRecording_triggered(){
+    this->stop();
 }
 

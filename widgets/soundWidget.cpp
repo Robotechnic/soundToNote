@@ -1,4 +1,4 @@
-#include "soundWidget.h"
+#include "widgets/soundWidget.h"
 
 SoundWidget::SoundWidget(QWidget *parent) :
     QWidget(parent),
@@ -21,11 +21,19 @@ void SoundWidget::setBufferSize(int bufferSize) {
     this->update();
 }
 
-void SoundWidget::pushSoundLevel(double level){
+void SoundWidget::pushSoundLevel(float level){
     buffer.push_back(level);
     buffer.pop_front();
 }
 
+void SoundWidget::pushSoundLevel(QVector<float> level) {
+
+    for (int i = 0; i<level.size(); i++){
+        this->buffer.pop_front();
+    }
+
+    this->buffer.append(level);
+}
 
 void SoundWidget::paintEvent(QPaintEvent *event){
     QPainter p(this);

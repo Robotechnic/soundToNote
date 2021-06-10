@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>stopRecord.png</file>
+        <file>record.png</file>
+        <file>open.png</file>
+        <file>close.png</file>
+    </qresource>
+</RCC>

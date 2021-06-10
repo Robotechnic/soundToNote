@@ -1,7 +1,7 @@
 #ifndef NOTESFREQUENCY_H
 #define NOTESFREQUENCY_H
 
-enum octave{
+enum octave{ //frequency are
     noteDo0 = 3270,
     noteDo1 = 6541,
     noteDo2 = 13081,
@@ -122,9 +122,10 @@ enum octave{
     noteSi7 = 790213,
     noteSi8 = 1580426,
     noteSi9 = 316085,
+    silence
 };
 
-enum noteType {
+enum noteDuration {
     breve,
     semibreve,
     minim,
@@ -134,7 +135,7 @@ enum noteType {
 };
 
 struct Note {
-    noteType type;
+    noteDuration type;
     octave note;
 };
 
