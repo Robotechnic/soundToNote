@@ -4,29 +4,33 @@
 #include <QObject>
 #include <QThread>
 #include <QDebug>
+#include <complex>
 
 #include "notesFrequency.h"
+#include "fft.h"
 
 
 class FrequencyParser : public QThread
 {
     Q_OBJECT
 public:
-    FrequencyParser(QObject *parent = nullptr);
+    FrequencyParser(QObject *parent = nullptr, int frequency = 16000);
     ~ FrequencyParser();
-    void pushAmplitude(const QVector<float> soundAmplitude);
+    void pushAmplitude(const QVector<double> soundAmplitude);
     void clear();
 
 signals:
     void newFrequencyProcessed(Note note);
 
 private:
-    QVector<QVector<float>> soundAmplitudeBuffer;
+    QVector<QVector<double>> soundAmplitudeBuffer;
     QVector<Note> notesBuffer;
 
     void run() override;
 
-    void procesAmplitude(const QVector<float> soundAmplitude);
+    int frequency;
+    double procesAmplitude(const QVector<double> soundAmplitude);
+    octave nearestNote(double freq);
 };
 
 #endif // FREQUENCYPARSER_H

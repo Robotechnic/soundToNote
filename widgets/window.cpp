@@ -1,23 +1,26 @@
 #include "widgets/window.h"
 #include "ui_window.h"
 
+#define SAMPLE_RATE 35000
 
 
 Window::Window(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::Window),
       audioBuffer(this),
-      parser(this)
+      parser(this,SAMPLE_RATE)
 {
     ui->setupUi(this);
 
     //setup audio input
-    format.setSampleRate(8000);
+    format.setSampleRate(SAMPLE_RATE);
     format.setChannelCount(1);
     format.setSampleSize(16);
     format.setSampleType(QAudioFormat::SignedInt);
     format.setByteOrder(QAudioFormat::LittleEndian);
     format.setCodec("audio/pcm");
+
+    qDebug()<<format.durationForFrames(1);
 
     //setup audio input
     QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
@@ -59,7 +62,7 @@ void Window::start(){
 
 void Window::processAudioFrame(QByteArray data){
     const short* frames = (short *)data.constData();
-    QVector<float> result;
+    QVector<double> result;
     for (int  i=0; i < data.length()/2; i ++ ){
         result.append(frames[i]);
     }
