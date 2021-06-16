@@ -26,7 +26,7 @@ public:
 private slots:
     void start();
 
-    void stop();
+    void stop(bool clear = false);
 
     void stateManager(QAudio::State newState);
 
@@ -34,13 +34,19 @@ private slots:
 
     void on_actionStopRecording_triggered();
 
+    void on_actionPauseRecording_triggered();
+
+
 private:
     Ui::Window *ui;
 
     QAudioFormat format;
     QAudioInput *audio;
+    int maxFrameSize;
     QBuffer audioBuffer;
     void processAudioFrame(QByteArray data);
+
+    void setRecordUIState(bool recording);
 
     FrequencyParser parser;
 };

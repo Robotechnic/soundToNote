@@ -15,6 +15,8 @@ void FrequencyParser::pushAmplitude(const QVector<double> soundAmplitude){
 }
 
 void FrequencyParser::clear() {
+    this->quit();
+    this->wait();
     this->notesBuffer.clear();
     this->soundAmplitudeBuffer.clear();
 }
@@ -29,6 +31,8 @@ void FrequencyParser::run(){
         } else {
             this->notesBuffer.append(Note(breve,note));
         }
+
+        emit newFrequencyProcessed(Note(breve,note));
 
         this->soundAmplitudeBuffer.pop_back();
     }

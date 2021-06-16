@@ -4,5 +4,6 @@
         <file>record.png</file>
         <file>open.png</file>
         <file>close.png</file>
+        <file>pause.png</file>
     </qresource>
 </RCC>

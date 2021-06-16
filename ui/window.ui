@@ -50,6 +50,7 @@
      <string>Recording</string>
     </property>
     <addaction name="actionStartRecording"/>
+    <addaction name="actionPauseRecording"/>
     <addaction name="actionStopRecording"/>
    </widget>
    <addaction name="menuFile"/>
@@ -67,6 +68,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionStartRecording"/>
+   <addaction name="actionPauseRecording"/>
    <addaction name="actionStopRecording"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -98,6 +100,9 @@
    </property>
   </action>
   <action name="actionStopRecording">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
      <normaloff>:/stopRecord.png</normaloff>:/stopRecord.png</iconset>
@@ -142,6 +147,24 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionPauseRecording">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/pause.png</normaloff>:/pause.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pause Recording</string>
+   </property>
+   <property name="toolTip">
+    <string>Put recording on paused state</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>

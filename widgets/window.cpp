@@ -2,6 +2,7 @@
 #include "ui_window.h"
 
 #define SAMPLE_RATE 35000
+#define MIN_NOTE_DURATION 75 //75 ms is the duration of a quarter at 100bpm
 
 
 Window::Window(QWidget *parent)
@@ -20,7 +21,6 @@ Window::Window(QWidget *parent)
     format.setByteOrder(QAudioFormat::LittleEndian);
     format.setCodec("audio/pcm");
 
-    qDebug()<<format.durationForFrames(1);
 
     //setup audio input
     QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
@@ -33,16 +33,21 @@ Window::Window(QWidget *parent)
     audio = new QAudioInput(format,this);
     connect(audio,&QAudioInput::stateChanged,this,&Window::stateManager);
 
-    audio->setNotifyInterval(75); //75 ms is the duration of a quarter at 100bpm
+    audio->setNotifyInterval(MIN_NOTE_DURATION);
+    maxFrameSize = format.bytesForDuration(MIN_NOTE_DURATION*1000);
+
 
     connect(audio,&QAudioInput::notify,[this]{
-        int ready = audio->bytesReady();
+        int ready = qMin(audio->bytesReady(),maxFrameSize);
+
         this->audioBuffer.seek(0);
-        qDebug()<<format.durationForBytes(this->audioBuffer.bytesAvailable())/1000;
         this->processAudioFrame(this->audioBuffer.read(ready));
         this->audioBuffer.buffer().clear();
         this->audioBuffer.seek(0);
     });
+
+    //setup sound widget
+    //ui->soundView->setFrameDuration(MIN_NOTE_DURATION/maxFrameSize);
 }
 
 Window::~Window() {
@@ -52,6 +57,7 @@ Window::~Window() {
 
 void Window::stateManager(QAudio::State newState) {
     qDebug()<<newState;
+    this->setRecordUIState(newState != QAudio::State::StoppedState);
 }
 
 void Window::start(){
@@ -71,10 +77,12 @@ void Window::processAudioFrame(QByteArray data){
     parser.pushAmplitude(result);
 }
 
-void Window::stop(){
+void Window::stop(bool clear){
     qDebug()<<"Stop recording";
     this->audio->stop();
     this->audioBuffer.close();
+    if (clear)
+        this->parser.clear();
 }
 void Window::on_actionStartRecording_triggered(){
     this->start();
@@ -82,6 +90,16 @@ void Window::on_actionStartRecording_triggered(){
 
 
 void Window::on_actionStopRecording_triggered(){
+    this->stop(true);
+}
+
+
+void Window::on_actionPauseRecording_triggered(){
     this->stop();
 }
 
+void Window::setRecordUIState(bool recording){
+    ui->actionPauseRecording->setEnabled(recording);
+    ui->actionStopRecording->setEnabled(recording);
+    ui->actionStartRecording->setEnabled(!recording);
+}

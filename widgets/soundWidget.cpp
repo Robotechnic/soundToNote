@@ -21,17 +21,22 @@ void SoundWidget::setBufferSize(int bufferSize) {
     this->update();
 }
 
-void SoundWidget::pushSoundLevel(float level){
+void SoundWidget::pushSoundLevel(double level){
     buffer.push_back(level);
     buffer.pop_front();
 }
 
-void SoundWidget::pushSoundLevel(QVector<float> level) {
-
-    for (int i = 0; i<level.size(); i++){
-        this->buffer.pop_front();
+void SoundWidget::pushSoundLevel(QVector<double> level) {
+    if (level.size() > this->bufferSize){
+        this->buffer.clear();
+        for (int i = 0; i < level.size() - this->bufferSize; i++){
+            level.pop_back();
+        }
+    } else {
+        for (int i = 0; i<level.size(); i++){
+            this->buffer.pop_front();
+        }
     }
-
     this->buffer.append(level);
 }
 

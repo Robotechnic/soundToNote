@@ -17,14 +17,14 @@ public:
 
     void setBufferSize(int bufferSize);
 
-    void pushSoundLevel(float level);
-    void pushSoundLevel(QVector<float> level);
+    void pushSoundLevel(double level);
+    void pushSoundLevel(QVector<double> level);
 
 private:
     void paintEvent(QPaintEvent *event);
 
     int bufferSize;
-    QVector<float> buffer;
+    QVector<double> buffer;
     QTimer *updateInterval;
 };
 
