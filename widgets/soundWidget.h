@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPolygonF>
 #include <QTimer>
 
@@ -15,15 +16,16 @@ public:
     explicit SoundWidget(QWidget *parent = nullptr);
     ~ SoundWidget();
 
-    void setBufferSize(int bufferSize);
-
     void pushSoundLevel(double level);
     void pushSoundLevel(QVector<double> level);
+
+    void setFramePerMs(int frames){this->framePerMs = frames;};
 
 private:
     void paintEvent(QPaintEvent *event);
 
     int bufferSize;
+    int framePerMs;
     QVector<double> buffer;
     QTimer *updateInterval;
 };

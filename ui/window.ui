@@ -23,6 +23,9 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
      </widget>
     </item>
    </layout>
@@ -53,8 +56,15 @@
     <addaction name="actionPauseRecording"/>
     <addaction name="actionStopRecording"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionSondTunning"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuRecording"/>
+   <addaction name="menuView"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="recordBar">
@@ -71,7 +81,7 @@
    <addaction name="actionPauseRecording"/>
    <addaction name="actionStopRecording"/>
   </widget>
-  <widget class="QToolBar" name="toolBar">
+  <widget class="QToolBar" name="fileBar">
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -83,6 +93,66 @@
    </attribute>
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
+  </widget>
+  <widget class="QDockWidget" name="soundTuning">
+   <property name="windowIcon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/soundTune.png</normaloff>:/soundTune.png</iconset>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Sound level:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="soundLevelGroup">
+       <item>
+        <widget class="QSlider" name="soundLevelSlider">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="soundLevelLabel">
+         <property name="text">
+          <string>1</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <action name="actionStartRecording">
    <property name="icon">
@@ -165,6 +235,24 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionSondTunning">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/soundTune.png</normaloff>:/soundTune.png</iconset>
+   </property>
+   <property name="text">
+    <string>Sond tunning</string>
+   </property>
+   <property name="toolTip">
+    <string>Manage sound level, parameters...</string>
    </property>
   </action>
  </widget>

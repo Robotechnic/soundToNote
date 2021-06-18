@@ -49,7 +49,7 @@ double FrequencyParser::procesAmplitude(const QVector<double> soundAmplitude) {
 
     //get max amplitude
     for (int i = 0; i<result.length()/2; i++){
-        amplitude = sqrt(pow(result.at(i).real(),2)),pow(result.at(i).imag(),2);
+        amplitude = sqrt(pow(result.at(i).real(),2) + pow(result.at(i).imag(),2)) / (result.length());
         if (maxAmplitude < amplitude){
             maxAmplitude = amplitude;
             maxId = i;
@@ -58,6 +58,7 @@ double FrequencyParser::procesAmplitude(const QVector<double> soundAmplitude) {
 
     //get frequency of amplitude
     if (maxAmplitude > 1e6){
+
         double freq = maxId * frequency / soundAmplitude.size();
         return freq;
     } else {

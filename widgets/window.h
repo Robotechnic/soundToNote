@@ -37,6 +37,12 @@ private slots:
     void on_actionPauseRecording_triggered();
 
 
+    void on_actionSondTunning_triggered(bool checked);
+
+    void on_soundTuning_visibilityChanged(bool visible);
+
+    void on_soundLevelSlider_valueChanged(int value);
+
 private:
     Ui::Window *ui;
 

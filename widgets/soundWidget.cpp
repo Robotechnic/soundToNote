@@ -2,24 +2,25 @@
 
 SoundWidget::SoundWidget(QWidget *parent) :
     QWidget(parent),
+    buffer(this->width(),0),
     updateInterval(new QTimer(this))
 {
-    this->setBufferSize(1000);
     updateInterval->setInterval(100);
-    connect(updateInterval,&QTimer::timeout,this,QOverload<>::of(&SoundWidget::update));
+
+
+
+    connect(updateInterval,&QTimer::timeout,[this]{
+        for (int i = 0; i < this->framePerMs * 100 && this->buffer.size() > this->width(); i++){
+            this->buffer.pop_front();
+        }
+        this->update();
+    });
+
     updateInterval->start();
 }
 
 SoundWidget::~SoundWidget(){}
 
-void SoundWidget::setBufferSize(int bufferSize) {
-    this->bufferSize = bufferSize;
-    buffer.clear();
-    for (int i = 0; i<bufferSize; i++){
-        buffer.push_back(0);
-    }
-    this->update();
-}
 
 void SoundWidget::pushSoundLevel(double level){
     buffer.push_back(level);
@@ -27,26 +28,30 @@ void SoundWidget::pushSoundLevel(double level){
 }
 
 void SoundWidget::pushSoundLevel(QVector<double> level) {
-    if (level.size() > this->bufferSize){
-        this->buffer.clear();
-        for (int i = 0; i < level.size() - this->bufferSize; i++){
-            level.pop_back();
-        }
-    } else {
-        for (int i = 0; i<level.size(); i++){
-            this->buffer.pop_front();
-        }
-    }
     this->buffer.append(level);
 }
 
 void SoundWidget::paintEvent(QPaintEvent *event){
+    Q_UNUSED(event);
     QPainter p(this);
     QPolygonF soundWave;
 
-    for (int x = 0; x<this->bufferSize; x++){
-        soundWave<<QPointF(x,(buffer.at(x)/65534.0*this->height()*0.5)+this->height()/2);
+    for (int x = 0; x<qMin(this->width(),this->buffer.size()); x++){
+        soundWave<<QPointF(x,(buffer.at(x)/65534.0*this->height()*0.6)+this->height()/2);
     }
 
+    p.fillRect(this->rect(),QColor(0x28,0x29,0x23));
+
+    p.setPen(Qt::white);
+    p.drawLine(0,this->height()/2,this->width(),this->height()/2);
+
+    QPainterPath path;
+    path.moveTo(this->width(),this->height()/2);
+    path.lineTo(this->width()-5,this->height()/2-5);
+    path.lineTo(this->width()-5,this->height()/2+5);
+    p.fillPath(path,Qt::white);
+
+    p.setPen(Qt::blue);
     p.drawPolyline(soundWave);
+
 }

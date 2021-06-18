@@ -47,7 +47,7 @@ Window::Window(QWidget *parent)
     });
 
     //setup sound widget
-    //ui->soundView->setFrameDuration(MIN_NOTE_DURATION/maxFrameSize);
+    ui->soundView->setFramePerMs(maxFrameSize/MIN_NOTE_DURATION);
 }
 
 Window::~Window() {
@@ -102,4 +102,20 @@ void Window::setRecordUIState(bool recording){
     ui->actionPauseRecording->setEnabled(recording);
     ui->actionStopRecording->setEnabled(recording);
     ui->actionStartRecording->setEnabled(!recording);
+    ui->soundLevelSlider->setEnabled(!recording);
 }
+
+void Window::on_actionSondTunning_triggered(bool checked) {
+    ui->soundTuning->setVisible(checked);
+}
+
+void Window::on_soundTuning_visibilityChanged(bool visible){
+    ui->actionSondTunning->setChecked(visible);
+}
+
+
+void Window::on_soundLevelSlider_valueChanged(int value){
+    ui->soundLevelLabel->setText(QString::number(value/100.0));
+    this->audio->setVolume(qreal(value) / 100);
+}
+
